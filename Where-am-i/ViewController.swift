@@ -40,6 +40,40 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         let location = CLLocationCoordinate2DMake(latitude, longitude)
         let region = MKCoordinateRegionMake(location, span)
         mapView.setRegion(region,animated:true)
+        
+        latValue.text = String(latitude)
+        lonValue.text = String(longitude)
+        altValue.text = String(usrLocation.altitude)
+        speedValue.text = String(usrLocation.speed) + " mph"
+        courseValue.text = String(usrLocation.course)
+        
+        CLGeocoder().reverseGeocodeLocation(usrLocation){
+            (placemarks,errors) in
+            if errors != nil{
+                print(errors)
+            }
+            else{
+                if let placemark = placemarks?[0]{
+                    var address = ""
+                    if placemark.subThoroughfare != nil{
+                        address += placemark.subThoroughfare! + ","
+                    }
+                    if placemark.thoroughfare != nil{
+                        address += placemark.thoroughfare! + ","
+                    }
+                    if placemark.subLocality != nil{
+                        address += placemark.subLocality! + ","
+                    }
+                    if placemark.locality != nil{
+                        address += placemark.locality! + ","
+                    }
+                    if placemark.isoCountryCode != nil{
+                        address += placemark.isoCountryCode! + "."
+                    }
+                    self.addrValue.text = address
+                }
+            }
+        }
     }
 
     override func didReceiveMemoryWarning() {
